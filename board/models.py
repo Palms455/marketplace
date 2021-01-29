@@ -1,5 +1,6 @@
 from django.db import models
 from .helpers import get_upload_dir
+from django.db.models import JSONField
 
 
 class Category(models.Model):
@@ -41,12 +42,19 @@ class Tags(models.Model):
 
 class BoardItem(models.Model):
     """Объявление"""
+    id = models.AutoField(primary_key=True, verbose_name="Номер объявления")
     title = models.CharField(max_length=150, null=False, blank=False, verbose_name="Название")
     description = models.TextField(null=False, blank=False, verbose_name="Описание")
-    current_price = models.DecimalField(decimal_places=2, null=True, blank=True, verbose_name="Текущая цена")
-    old_price = models.DecimalField(decimal_places=2, null=True, blank=True, verbose_name="Прошлая цена")
+    current_price = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, verbose_name="Текущая цена")
+    old_price = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, verbose_name="Прошлая цена")
     subcategories = models.ForeignKey(Subcategory, on_delete=models.PROTECT, verbose_name="Подкатегории", related_name="subcategories")
     tags = models.ManyToManyField(Tags, verbose_name="Теги")
+    create_date = models.DateTimeField(auto_now=True, verbose_name="Дата создания")
+    publish_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата публикации")
+    update_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата обновления")
+    upper_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата поднятия")
+    published = models.BooleanField(default=False, verbose_name="Статус объявления")
+    extra_data = models.JSONField(blank=True, null=True, verbose_name="Дополнительное описание")
 
     class Meta:
         db_table = '"catalog"."board_item"'

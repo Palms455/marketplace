@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-from .settings_local import DEBUG, DATABASES
+from .settings_local import DEBUG, DATABASES, SECRET_KEY
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=qwwotjsd8)p+elg4@is%$58zc!ng)%1^@ng_bv1&p&efygucw'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -38,9 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'board',
 
     'rest_framework',
+
+    'board',
+    'seller'
+
+
 
 ]
 
@@ -111,8 +116,17 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = "seller.SellerUser"
+LOGIN_URL = "/iddqd/login/"
+LOGIN_REDIRECT_URL = "/"
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(ROOT_DIR, "static")
+
+
+MEDIA_ROOT = os.path.join(ROOT_DIR, "uploads")
+MEDIA_URL = "/uploads/"
