@@ -5,7 +5,8 @@ __pycache__/
 
 # C extensions
 *.so
-
+market_env/
+marketplace/settings_local.py
 # Distribution / packaging
 .Python
 build/
