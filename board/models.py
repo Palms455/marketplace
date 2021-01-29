@@ -39,6 +39,9 @@ class Tags(models.Model):
         verbose_name = "Тег"
         verbose_name_plural = "Теги"
 
+    def __str__(self):
+        return self.name
+
 
 class BoardItem(models.Model):
     """Объявление"""
@@ -48,7 +51,7 @@ class BoardItem(models.Model):
     current_price = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, verbose_name="Текущая цена")
     old_price = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, verbose_name="Прошлая цена")
     subcategories = models.ForeignKey(Subcategory, on_delete=models.PROTECT, verbose_name="Подкатегории", related_name="subcategories")
-    tags = models.ManyToManyField(Tags, verbose_name="Теги")
+    tags = models.ManyToManyField(Tags, blank=True, related_name='tag_items', verbose_name="Теги")
     create_date = models.DateTimeField(auto_now=True, verbose_name="Дата создания")
     publish_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата публикации")
     update_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата обновления")
