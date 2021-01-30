@@ -1,5 +1,8 @@
 from django.contrib import admin
 from .models import Category, Subcategory, Tags, BoardItem, BoardImages
+from django_json_widget.widgets import JSONEditorWidget
+from django.contrib.postgres import fields
+from django.db import models
 # Register your models here.
 
 class SubcategoryAdmin(admin.TabularInline):
@@ -25,7 +28,9 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(BoardItem)
 class BoardAdmin(admin.ModelAdmin):
-    model = BoardItem
+    formfield_overrides = {
+        models.JSONField: {'widget': JSONEditorWidget},
+    }
     filter_horizontal = ('tags',)
 
     inlines = [ImageAdmin]

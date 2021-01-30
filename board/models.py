@@ -58,6 +58,7 @@ class BoardItem(models.Model):
     upper_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата поднятия")
     published = models.BooleanField(default=False, verbose_name="Статус объявления")
     extra_data = models.JSONField(blank=True, null=True, verbose_name="Дополнительное описание")
+    # todo: JsonSchemaValidate
 
     class Meta:
         db_table = '"catalog"."board_item"'
