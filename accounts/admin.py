@@ -5,13 +5,13 @@ from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from .models import Role, Account
 
 
-class RoleAdmin(admin.TabularInline):
-    model = Role
-    extra = 0
+# class RoleAdmin(admin.TabularInline):
+#     model = Role
+#     extra = 0
 
 
 @admin.register(Account)
 class UseAdmin(UserAdmin):
     model = Account
-    inlines = [RoleAdmin]
+    #inlines = [RoleAdmin]
 
