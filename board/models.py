@@ -43,7 +43,7 @@ class Tags(models.Model):
         return self.name
 
 
-class BoardItem(models.Model):
+class SaleProduct(models.Model):
     """Объявление"""
     id = models.AutoField(primary_key=True, verbose_name="Номер объявления")
     title = models.CharField(max_length=150, null=False, blank=False, verbose_name="Название")
@@ -61,7 +61,7 @@ class BoardItem(models.Model):
     # todo: JsonSchemaValidate
 
     class Meta:
-        db_table = '"catalog"."board_item"'
+        db_table = '"catalog"."sale_product"'
         verbose_name = "Объявление"
         verbose_name_plural = "Объявления"
 
@@ -69,12 +69,12 @@ class BoardItem(models.Model):
         return self.title
 
 
-class BoardImages(models.Model):
+class ProductImages(models.Model):
     """Изображения"""
     image = models.ImageField(upload_to=get_upload_dir)
-    board_item = models.ForeignKey(BoardItem, null=True, blank=True, on_delete=models.CASCADE, verbose_name="Изображения")
+    board_item = models.ForeignKey(SaleProduct, null=True, blank=True, on_delete=models.CASCADE, verbose_name="Изображения")
 
     class Meta:
-        db_table = '"catalog"."board_images"'
+        db_table = '"catalog"."product_images"'
         verbose_name = "Изображение товара"
         verbose_name_plural = "Изображения товаров"

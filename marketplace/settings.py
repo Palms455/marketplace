@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'rest_framework_social_oauth2',
 
     'board',
-    'seller',
+    'accounts',
 
 
 
@@ -180,7 +180,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = "seller.SellerUser"
+AUTH_USER_MODEL = "accounts.Account"
 LOGIN_URL = "/iddqd/login/"
 LOGIN_REDIRECT_URL = "/"
 

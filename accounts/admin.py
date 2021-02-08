@@ -2,15 +2,16 @@ from django.contrib import admin
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 # Register your models here.
 
-from .models import Role, SellerUser
+from .models import Role, Account
 
 
-@admin.register(Role)
-class RoleAdmin(admin.ModelAdmin):
+class RoleAdmin(admin.TabularInline):
     model = Role
+    extra = 0
 
 
-@admin.register(SellerUser)
+@admin.register(Account)
 class UseAdmin(UserAdmin):
-    model = SellerUser
+    model = Account
+    inlines = [RoleAdmin]
 
