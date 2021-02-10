@@ -1,12 +1,16 @@
 from django.db import models
 from .helpers import get_upload_dir
 from django.db.models import JSONField
+from pytils.translit import slugify
+from accounts.models import Account
 
 
 class Category(models.Model):
     """Категория"""
     name = models.CharField(max_length=150, verbose_name="Категория")
     description = models.CharField(max_length=500, verbose_name="Описание")
+    parent_categories = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL, related_name='child_categories', verbose_name="Родительская категория")
+    slug = models.CharField(max_length=255, default="", verbose_name="Символьный код", blank=True)
 
     def __str__(self):
         return self.name
@@ -16,23 +20,14 @@ class Category(models.Model):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
-
-class Subcategory(models.Model):
-    """Подкатегория"""
-    name = models.CharField(max_length=150)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, verbose_name="Основная категория", related_name="subcategories")
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = '"catalog"."subcategory"'
-        verbose_name = "Подкатегория"
-        verbose_name_plural = "Подкатегории"
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Category, self).save()
 
 
 class Tags(models.Model):
     name = models.CharField(max_length=150, verbose_name="Название тега")
+    slug = models.CharField(max_length=255, default="", verbose_name="Символьный код", blank=True)
 
     class Meta:
         db_table = '"catalog"."tags"'
@@ -42,6 +37,10 @@ class Tags(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Tags, self).save()
+
 
 class SaleProduct(models.Model):
     """Объявление"""
@@ -50,7 +49,7 @@ class SaleProduct(models.Model):
     description = models.TextField(null=False, blank=False, verbose_name="Описание")
     current_price = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, verbose_name="Текущая цена")
     old_price = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, verbose_name="Прошлая цена")
-    subcategories = models.ForeignKey(Subcategory, on_delete=models.PROTECT, verbose_name="Подкатегории", related_name="subcategories")
+    category = models.ForeignKey(Category, verbose_name="Категории", related_name="offers", on_delete=models.SET_NULL, null=True, blank=True)
     tags = models.ManyToManyField(Tags, blank=True, related_name='tag_items', verbose_name="Теги")
     create_date = models.DateTimeField(auto_now=True, verbose_name="Дата создания")
     publish_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата публикации")
@@ -58,6 +57,7 @@ class SaleProduct(models.Model):
     upper_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата поднятия")
     published = models.BooleanField(default=False, verbose_name="Статус объявления")
     extra_data = models.JSONField(blank=True, null=True, verbose_name="Дополнительное описание")
+    author = models.ForeignKey(Account, on_delete=models.CASCADE, verbose_name="Продавец")
     # todo: JsonSchemaValidate
 
     class Meta:
@@ -72,7 +72,7 @@ class SaleProduct(models.Model):
 class ProductImages(models.Model):
     """Изображения"""
     image = models.ImageField(upload_to=get_upload_dir)
-    board_item = models.ForeignKey(SaleProduct, null=True, blank=True, on_delete=models.CASCADE, verbose_name="Изображения")
+    board_item = models.ForeignKey(SaleProduct, null=True, blank=True, on_delete=models.CASCADE, related_name="images", verbose_name="Изображения")
 
     class Meta:
         db_table = '"catalog"."product_images"'
